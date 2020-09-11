@@ -1,31 +1,35 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import WithTaskServise from '../hoc/withTaskServise'
-import {deleteFromTask} from '../actions/actions'
-
+import React from 'react';
 import useStyles from './styleTaskItem'
 
 
 
 
- const TaskItem =  ({taskItem}) => {
+ const TaskItem =  ({taskItem,onDeleteFromTasks,onRisePriority, onLowerPriority}) => {
+
     
     const {name, task, priority} = taskItem;
     
+
     const ButtonDel = ({children}) => {
         const {btnDelete} = useStyles();
         return (
-            <button className={btnDelete} onClick={() => deleteFromTask(taskItem.id)}>
+            <button className={btnDelete} onClick={(e) => {
+                e.preventDefault();
+                onDeleteFromTasks();
+            }}>
                 <span>{children}</span>
             </button>
         )
     }
     const ButtonLower = ({children}) => {
     let {btnLowerPriority, btnPriorityHiden} = useStyles();
-        if(priority === "0") 
+        if(priority === 0) 
             btnLowerPriority = btnPriorityHiden;
         return (
-            <button className={btnLowerPriority}>
+            <button className={btnLowerPriority} onClick={(e) => {
+                e.preventDefault();
+                onLowerPriority();
+            }}>
                 <span>{children}</span>
             </button>
         )
@@ -33,10 +37,13 @@ import useStyles from './styleTaskItem'
     }
     const ButtonRise = ({children}) => {
         let {btnRisePriority,btnPriorityHiden} = useStyles();
-        if(priority === "10")
+        if(priority === 10)
             btnRisePriority = btnPriorityHiden;
         return (
-            <button className={btnRisePriority}>
+            <button className={btnRisePriority} onClick={(e) => {
+                e.preventDefault();
+                onRisePriority();
+            }}>
                 <span>{children}</span>
             </button>
         )
@@ -44,7 +51,7 @@ import useStyles from './styleTaskItem'
 
     return (
         <>
-            <li className="menu__item">
+            <li className="task__item">
             
                     <div >
                         <div>Ответственный {name}</div> 
@@ -62,15 +69,7 @@ import useStyles from './styleTaskItem'
     )
 }
 
-const mapStateToProps = ({items}) => {
-    return{
-        items 
-    }
-};
-
-const mapDispatchToProps = {
-    deleteFromTask
-}
 
 
-export default WithTaskServise()(connect(mapStateToProps, mapDispatchToProps)(TaskItem));
+
+export default TaskItem;

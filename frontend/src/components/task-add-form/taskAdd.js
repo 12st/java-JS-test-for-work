@@ -1,54 +1,117 @@
-import React from 'react';
-//import useStyles from './'
-
- const TaskAdd = () => {
-     
-   // const classes = useStyles();
-    let text;
+import React,{Component} from 'react';
+import WithTaskServise from '../hoc/withTaskServise';
+import {connect} from 'react-redux';
+import {addToTasks} from '../actions/actions';
 
 
-    const onValueChange = (e) => {
-        text=e.target.value;
+ class TaskAdd extends Component {
+    constructor(props) {
+        super();
+        this.state = {
+            name: "",
+            task: "",
+            priority: "",
+            fromE: false
+        }
     }
 
-    const onSubmit = (e) => {
+     onNameChange = (e) => {
+        this.setState({
+            name: e.target.value
+        })
+        
+    }
+
+    onTaskChange = (e) => {
+        this.setState({
+            task: e.target.value
+        })
+    }
+
+    onPriorityChange = (e) => {
+        this.setState({
+            priority: e.target.value
+        })
+    }
+
+    onSubmit = (e) => {
         e.preventDefault();
-        console.log(text);
-    }
+        let taskItem;
+        taskItem = {
+            name:this.state.name,
+            task: this.state.task,
+            priority:  Number.parseInt(this.state.priority),
+            id: Date.now()
+        }
 
-  
-    return(
-        <div className="bottom-panel">
-            <form onSubmit={onSubmit}>
-                <div className="form-group">
-                    <label htmlFor="exampleInputEmail1">Имя исполнителя</label>
-                    <input 
-                    type="text"
-                    className="form-control"
-                    onChange={onValueChange}
-                    value={text}
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="exampleFormControlTextarea1">Текст задачи</label>
-                    <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-                <select className="custom-select" id="validationCustom04" required onChange={onValueChange}>
-                    <option >Приоритет</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                </select>
-                <input className= "btn btn-primary" type="submit" defaultValue="Отправить"/>
-            </form>
-    </div>
-    )
+        if (this.state.name === '' || this.state.task ==='' || this.state.priority === '')
+            {
+                alert("Форма не должна быть пустой!");
+                return;
+            }
+        const {TaskService} = this.props;
+        TaskService.postResource("/tasks/",taskItem)
+        .then(() => {this.props.addToTasks(taskItem)})
+        this.setState({
+            name: '',
+            task: '',
+            priority: ''
+        })
+     }
+
+    render() {    
+            return(
+                <div className="bottom-panel">
+                    <form onSubmit={this.onSubmit}>
+                        <div className="form-group">
+                            <label>Имя исполнителя</label>
+                            <input 
+                            type="text"
+                            className="form-control"
+                            onChange={this.onNameChange}
+                            value={this.state.name}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleFormControlTextarea1">Текст задачи</label>
+                            <textarea className="form-control"  rows="3" type="text"  value={this.state.task} onChange={this.onTaskChange}>
+                            </textarea>
+                            
+
+                        </div>
+                        <select className="custom-select" 
+                            type="number"
+                            id="validationCustom04" 
+                            onChange={this.onPriorityChange}
+                            value={this.state.priority}>
+                            <option >Приоритет</option>
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                        <input className= "btn btn-primary" type="submit" defaultValue="Отправить"/>
+                    </form>
+            </div>
+            )
+        }
 }
-export default TaskAdd;
+
+const mapStateToProps = (taskItem) => {
+    return{
+        taskItem
+    }
+};
+
+const mapDispatchToProps = {
+    addToTasks
+}
+
+export default WithTaskServise()(connect(mapStateToProps, mapDispatchToProps)(TaskAdd));
