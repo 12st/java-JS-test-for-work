@@ -18,7 +18,6 @@ const taskError = () => {
 }
 
 const deleteFromTask = (id) => {
-    console.log(id);
     return {
         type: 'ITEM_REMOVE_FROM_TASKS',
         payload: id
@@ -34,25 +33,11 @@ const addToTasks = (task) => {
     }
 }
 
-const risePrioroty = (task) => {
-    return {
-        type: 'ITEM_RISE_PRIORITY',
-        payload: task
-    }
-}
 
-const lowerPriority = (id) => {
-    return {
-        type: 'ITEM_LOWER_PRIORITY',
-        payload: id
-    }
-}
 export {
     taskLoaded,
     taskReuqested,
     deleteFromTask,
     taskError,
-    addToTasks,
-    risePrioroty,
-    lowerPriority
+    addToTasks
 };

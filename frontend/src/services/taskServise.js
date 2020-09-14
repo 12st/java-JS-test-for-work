@@ -38,6 +38,20 @@ export default class TaskServise {
         }
     }
 
+    async putResourse(url,item) {
+        const res = await fetch(`
+        ${this._apiBase}${url}`, {
+            method: 'PUT',
+            headers: {'Content-type':'application/json'
+            },   
+            body: JSON.stringify(item)
+        });
+        if (!res.ok) {
+            throw new Error(`Could not put ${url}` + 
+                `, received ${res.status}`);
+        }
+    }
+
     async getTaskItems () {
         return await this.getResource('/tasks');
     }

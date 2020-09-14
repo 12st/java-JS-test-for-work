@@ -69,6 +69,21 @@ public class TodoController {
         return response;
     }
 
+    @PutMapping(produces = "application/json")
+    public BaseResponse TodoPutController(@RequestBody JsonDTO body) {
+        final BaseResponse response;
+
+        if(body != null) {
+
+            JsonDTO json = body;
+
+            todoService.putTask(json.getPriority(), json.getId());
+            response = new BaseResponse(SUCCESS_STATUS, CODE_SUCCESS);
+            return response;
+        }
+        response = new BaseResponse(ERROR_STATUS, 400);
+        return response;
+    }
 
     @DeleteMapping("{id}")
     public BaseResponse TodoDeleteController( @PathVariable Integer id) {

@@ -46,18 +46,6 @@ const reducer = (state = initalState, action) => {
                     action.payload
                 ]
             };
-        case 'ITEM_RISE_PRIORITY':
-            const i = action.payload;
-            const priorityIndex = state.tasks.findIndex(item => item.id === i);  
-            console.log(state.tasks[priorityIndex]);
-            
-            return {
-                ...state,
-                task: [
-                    ...state.tasks.slice(0, priorityIndex),
-                    ...state.tasks.slice(priorityIndex + 1)
-                ]
-            }
         default:
             return state;
     }

@@ -58,7 +58,13 @@ public class TodoService {
         }
         return 0;
     }
-    
+
+    public void putTask(int priority, int id) {
+                dsl.update(TODO)
+                .set(TODO.PRIORITY,priority)
+                .where(TODO.ID.eq(id))
+                .execute();
+    }
 
     public Todo getTodo (Integer todoId) {
         Record record = dsl.select()

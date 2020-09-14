@@ -2,7 +2,7 @@ import  React, {Component} from 'react';
 import TaskItem from "../task-item/taskItem";
 import WithTaskServise from '../hoc/withTaskServise';
 import {connect} from 'react-redux';
-import {taskLoaded,deleteFromTask, taskReuqested,addToTasks, risePrioroty,taskError} from '../actions/actions'
+import {taskLoaded,deleteFromTask, taskReuqested,addToTasks,taskError} from '../actions/actions'
 import Error from '../error/error';
 import Spinner from '../spiner/spiner';
 
@@ -32,29 +32,30 @@ class TaskList extends Component {
 
         const rPrioroty = (item) => {
             item.priority++;
-           TaskService.deleteResource("/tasks/",item.id)
-                .then(() => {
+           TaskService.putResourse("/tasks/",item)
+                .then(() => 
                     this.props.deleteFromTask(item.id)
-                    this.props.taskReuqested();
-                    TaskService.postResource("/tasks/",item)
-                    .then(() => {
-                        this.props.addToTasks(item)
-                    })
-                })
+                    )
+                .then(() => {
+                this.props.deleteFromTask(item.id);
+                this.props.addToTasks(item);
+                 })
                 .catch(this.props.taskError())
-        }
+            }
+
 
         const lPriority = (item) => {
             item.priority--;
-            TaskService.deleteResource("/tasks/",item.id)
-                .then(() => {
+            TaskService.putResourse("/tasks/",item)
+                .then(() => 
                     this.props.deleteFromTask(item.id)
-                    this.props.taskReuqested();
-                    TaskService.postResource("/tasks/",item)
-                    .then(() => {this.props.addToTasks(item)})
-                })
+                    )
+                .then(() => {
+                this.props.deleteFromTask(item.id);
+                this.props.addToTasks(item);
+                 })
                 .catch(this.props.taskError())
-        }
+            }
 
 
         const {taskItems,error,loading} = this.props;
@@ -96,7 +97,6 @@ const mapDispatchToProps = {
     taskReuqested,
     deleteFromTask,
     addToTasks,
-    risePrioroty, 
     taskError
 }
 
