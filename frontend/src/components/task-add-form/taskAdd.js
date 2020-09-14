@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import WithTaskServise from '../hoc/withTaskServise';
 import {connect} from 'react-redux';
-import {addToTasks} from '../actions/actions';
+import {addToTasks,taskError} from '../actions/actions';
 
 
  class TaskAdd extends Component {
@@ -41,7 +41,6 @@ import {addToTasks} from '../actions/actions';
             name:this.state.name,
             task: this.state.task,
             priority:  Number.parseInt(this.state.priority),
-            id: Date.now()
         }
 
         if (this.state.name === '' || this.state.task ==='' || this.state.priority === '')
@@ -49,14 +48,25 @@ import {addToTasks} from '../actions/actions';
                 alert("Форма не должна быть пустой!");
                 return;
             }
+
+
         const {TaskService} = this.props;
-        TaskService.postResource("/tasks/",taskItem)
-        .then(() => {this.props.addToTasks(taskItem)})
+        TaskService.postResource(`/tasks/`,taskItem)
+            .catch(() => this.props.taskError())
+
+        TaskService.getLastId()
+            .then(res =>  {
+                taskItem.id = ++res;
+            })
+            .then(() => {this.props.addToTasks(taskItem)})
+            .catch(() => this.props.taskError())
+
         this.setState({
             name: '',
             task: '',
             priority: ''
         })
+
      }
 
     render() {    
@@ -111,7 +121,8 @@ const mapStateToProps = (taskItem) => {
 };
 
 const mapDispatchToProps = {
-    addToTasks
+    addToTasks,
+    taskError
 }
 
 export default WithTaskServise()(connect(mapStateToProps, mapDispatchToProps)(TaskAdd));
