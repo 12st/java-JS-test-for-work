@@ -18,6 +18,7 @@ const taskError = () => {
 }
 
 const deleteFromTask = (id) => {
+    console.log(id);
     return {
         type: 'ITEM_REMOVE_FROM_TASKS',
         payload: id

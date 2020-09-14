@@ -1,5 +1,7 @@
 export default class TaskServise {
-    _apiBase ="http://localhost:3000";
+    _apiBase ="http://localhost:8080";
+
+
     async getResource(url) {
         const res = await fetch(`${this._apiBase}${url}`);
         if (!res.ok) {
@@ -8,6 +10,7 @@ export default class TaskServise {
         }
         return await res.json();
     }
+
     async postResource(url, body) {
         const res = await fetch(`
         ${this._apiBase}${url}`, {
@@ -19,6 +22,8 @@ export default class TaskServise {
             throw new Error(`Could not fetch ${url}` + 
                 `, received ${res.status}`);
         }
+
+        return res.JSON;
     }
 
     async deleteResource(url, id) {
@@ -33,22 +38,12 @@ export default class TaskServise {
         }
     }
 
-    async putResourse(url,item) {
-        const res = await fetch(`
-        ${this._apiBase}${url}${item.id}`, {
-            method: 'PUT',
-            headers: {'Content-type':'application/json'
-            },   
-            body: JSON.stringify(item)
-        });
-        if (!res.ok) {
-            throw new Error(`Could not put ${url}` + 
-                `, received ${res.status}`);
-        }
-    }
-
     async getTaskItems () {
         return await this.getResource('/tasks');
+    }
+
+    async getLastId () {
+        return await this.getResource('/tasks/last');
     }
 
 }

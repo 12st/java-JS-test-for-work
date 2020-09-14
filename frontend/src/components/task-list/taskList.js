@@ -2,7 +2,7 @@ import  React, {Component} from 'react';
 import TaskItem from "../task-item/taskItem";
 import WithTaskServise from '../hoc/withTaskServise';
 import {connect} from 'react-redux';
-import {taskLoaded,deleteFromTask, taskReuqested,addToTasks, risePrioroty} from '../actions/actions'
+import {taskLoaded,deleteFromTask, taskReuqested,addToTasks, risePrioroty,taskError} from '../actions/actions'
 import Error from '../error/error';
 import Spinner from '../spiner/spiner';
 
@@ -14,7 +14,7 @@ class TaskList extends Component {
         const {TaskService} = this.props;
         TaskService.getTaskItems()
         .then(res => this.props.taskLoaded(res))
-        .catch();
+        .catch(() => this.props.taskError());
     }
   
 
@@ -22,12 +22,12 @@ class TaskList extends Component {
         const {TaskService} = this.props;
 
        const deleteItem = (id) => {
-            
+            console.log(id);
             TaskService.deleteResource("/tasks/", id)
                 .then(() => {
                     this.props.deleteFromTask(id)
                 })
-                .catch(this.props.taskError);
+                .catch(this.props.taskError());
         }
 
         const rPrioroty = (item) => {
@@ -41,7 +41,7 @@ class TaskList extends Component {
                         this.props.addToTasks(item)
                     })
                 })
-                .catch(this.props.taskError)
+                .catch(this.props.taskError())
         }
 
         const lPriority = (item) => {
@@ -53,7 +53,7 @@ class TaskList extends Component {
                     TaskService.postResource("/tasks/",item)
                     .then(() => {this.props.addToTasks(item)})
                 })
-                .catch(this.props.taskError)
+                .catch(this.props.taskError())
         }
 
 
@@ -96,7 +96,8 @@ const mapDispatchToProps = {
     taskReuqested,
     deleteFromTask,
     addToTasks,
-    risePrioroty
+    risePrioroty, 
+    taskError
 }
 
 const View = ({items}) => {
